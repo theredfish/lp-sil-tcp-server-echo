@@ -50,10 +50,9 @@ public class Client implements Runnable {
 
 			Thread.sleep(delay);
 
-			for (int i = 0; i < 3000000 ; i++ ) {
-				output.write(line);
-			}
+			output.write(line);
 			socket.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
