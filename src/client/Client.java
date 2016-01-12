@@ -42,10 +42,8 @@ public class Client implements Runnable {
 	}
 
 	/**
-	 * Client is runnable.
+	 * Client thread.
 	 * When client is running we process to Read/Write (input/output standard).
-	 * TODO : move responsability to the server which should offer echo service.
-	 * The client should only write on standard input.
 	 */
 	public void run() {
 		try {
