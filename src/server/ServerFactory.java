@@ -23,7 +23,6 @@ public class ServerFactory {
 	/**
 	 * Get server based on configuration.
 	 * The server level depends on configuration.
-	 *
 	 */
 	public AbstractServer getServer(String configuration){
 		// TODO
