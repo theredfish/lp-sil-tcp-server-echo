@@ -12,29 +12,33 @@ import java.io.OutputStream;
 public class Client implements Runnable {
 
 	private int delay;
-	Socket socket;
+	Socket serverSocket;
 
 	/**
 	 * Client constructor.
-	 * Initialize client with a socket and default delay.
+	 * Initialize client with a serverSocket and default delay.
 	 *
-	 * @param socket which represents the client socket
+	 * @param serverSocket which represents the client serverSocket
 	 */
-	public Client(Socket socket) {
-		this.socket = socket;
+	public Client(Socket serverSocket) {
+		this.serverSocket = serverSocket;
 		this.delay = 0;
 	}
 
 	/**
 	 * Client constructor.
-	 * Initialize client with a socket and a specified sleep time.
+	 * Initialize client with a serverSocket and a specified sleep time.
 	 *
-	 * @param socket which represents the open tcp connection with a client.
+	 * @param serverSocket which represents the open tcp connection with a client.
 	 * @param delay which represents client's sleep time.
 	 **/
-	public Client(Socket socket, int delay) {
-		this(socket);
+	public Client(Socket serverSocket, int delay) {
+		this(serverSocket);
 		this.delay = delay;
+	}
+
+	public boolean quit(String str) {
+		return str.equalsIgnoreCase("quit");
 	}
 
 	/**
@@ -45,13 +49,20 @@ public class Client implements Runnable {
 	 */
 	public void run() {
 		try {
-			OutputStream output = socket.getOutputStream();
-			byte[] line = new Scanner(socket.getInputStream()).nextLine().getBytes();
+			InputStream input = serverSocket.getInputStream();
+			OutputStream output = serverSocket.getOutputStream();
+			Scanner scanner = new Scanner(input);
+			byte[] line = scanner.nextLine().getBytes();
 
-			Thread.sleep(delay);
+			while(!quit(new String(line))) {
+				output.write(line);
+				line = scanner.nextLine().getBytes();
+			}
+
+			Thread.sleep(2);
 
 			output.write(line);
-			socket.close();
+			serverSocket.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
