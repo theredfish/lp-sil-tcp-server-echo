@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import client.Client;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class LowLevelServer extends AbstractServer {
 
@@ -20,7 +22,9 @@ public class LowLevelServer extends AbstractServer {
     public void launch() {
 		try {
 			socket = new ServerSocket(port);
-			System.out.println("TCP low level server is running on " + this.port + "...");
+
+			System.out.println("TCP low level server is running on localhost "
+								+ port + "...");
 
 			// Server in listen mode
 			while (true) {
@@ -31,7 +35,7 @@ public class LowLevelServer extends AbstractServer {
 				new Thread(client).start();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("I/O Error" + e);
 		}
 	}
 }

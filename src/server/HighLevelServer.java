@@ -35,7 +35,7 @@ public class HighLevelServer extends AbstractServer {
 	public void launch() {
 		try {
 			socket = new ServerSocket(port);
-			System.out.println("TCP server is running on " + this.port + "...");
+			System.out.println("TCP server is running on " + port + "...");
 
 			while (true) {
 				Socket tcpClient = socket.accept();
