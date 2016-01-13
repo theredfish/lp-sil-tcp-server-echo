@@ -14,3 +14,8 @@ TODO
 ### Launch
 - Move to `bin` folder : `cd lp-sil-tcp-server-echo/bin/`
 - Launch main app : `java app.Main`
+
+## Play with the parrot
+- Establish a connection to the server : `telnet localhost 9900`
+- Write something, then push `enter`
+- If you are bored to play you can write `quit`
