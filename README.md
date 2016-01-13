@@ -16,6 +16,7 @@ TODO
 - Launch main app : `java app.Main`
 
 ## Play with the parrot
+![parrot gif](http://24.media.tumblr.com/a6faf44197197ac5b426a635208e2d69/tumblr_n18xtdrTCH1s02vreo1_400.gif)
 - Establish a connection to the server : `telnet localhost 9900`
 - Write something, then push `enter`
 - If you are bored to play you can write `quit`
