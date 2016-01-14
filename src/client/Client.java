@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Scanner;
 import java.io.OutputStream;
 import server.AbstractServer;
+import server.LowLevelServer;
+import server.HighLevelServer;
 import server.Token;
 
 /**
@@ -30,6 +32,12 @@ public class Client implements Runnable {
 		this.delay = 0;
 	}
 
+	public Client(Socket serverSocket, int delay, AbstractServer server) {
+		this(serverSocket);
+		this.delay = delay;
+		this.server = server;
+	}
+
 	/**
 	 * Client constructor.
 	 * Initialize client with a serverSocket and a specified sleep time.
@@ -44,10 +52,6 @@ public class Client implements Runnable {
 		this.tokens = tokens;
 	}
 
-	public boolean quit(String str) {
-		return str.equalsIgnoreCase("quit");
-	}
-
 	/**
 	 * Client thread.
 	 * When client is running we process to Read/Write (input/output standard).
@@ -60,13 +64,11 @@ public class Client implements Runnable {
 		}
 	}
 
-	runLowLevel() {
+	protected void runLowLevel() {
 		tokens.take();
 
 		try {
 			echo();
-		} catch (ServerException e) {
-			System.out.println(e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
@@ -76,11 +78,23 @@ public class Client implements Runnable {
 		}
 	}
 
-	runHighLevel() {
-		echo();
+	protected void runHighLevel() {
+		try {
+			echo();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			tokens.release();
+		}
 	}
 
-	public void echo() throws IOException, InterruptedException {
+	protected boolean quit(String str) {
+		return str.equalsIgnoreCase("quit");
+	}
+
+	protected void echo() throws IOException, InterruptedException {
 		InputStream input = serverSocket.getInputStream();
 		OutputStream output = serverSocket.getOutputStream();
 		Scanner scanner = new Scanner(input);

@@ -3,16 +3,24 @@ package server;
 public class Token {
 
     private int tokens;
-    private const MAX;
+    private int max;
 
     public Token(int tokens) {
         this.tokens = tokens;
-        this.MAX = tokens;
+        max = tokens;
+    }
+
+    public int getTokens() {
+        return tokens;
     }
 
     public synchronized void take() {
         while (isEmpty()) {
-            wait();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         tokens--;
@@ -24,14 +32,18 @@ public class Token {
      */
     public synchronized void release() {
         while (isFull()) {
-            wait();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         tokens++;
     }
 
     public boolean isFull() {
-        return tokens == MAX;
+        return tokens == max;
     }
 
     public boolean isEmpty() {

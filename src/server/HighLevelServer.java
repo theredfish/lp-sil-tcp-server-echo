@@ -40,7 +40,7 @@ public class HighLevelServer extends AbstractServer {
 
 			while (true) {
 				Socket tcpClient = socket.accept();
-				Client client = new Client(tcpClient, responseDelay);
+				Client client = new Client(tcpClient, responseDelay, this);
 
 				// Here we run the client
 				executorService.submit(client);

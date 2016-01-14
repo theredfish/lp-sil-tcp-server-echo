@@ -30,7 +30,8 @@ public class LowLevelServer extends AbstractServer {
 			// Server in listen mode
 			while (true) {
 				Socket tcpClient = socket.accept();
-				Client client = new Client(tcpClient, responseDelay);
+				Token tokens = new Token(poolSize);
+				Client client = new Client(tcpClient, responseDelay, this, tokens);
 
 				// Here we run new "client" thread
 				new Thread(client).start();
