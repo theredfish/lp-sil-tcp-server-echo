@@ -10,6 +10,8 @@ TODO
 ### Build
 - Move to `bin` folder : `cd lp-sil-tcp-server-echo/bin/`
 - Use javac to compile the project : `javac .././src/app/Main.java -d ./ -cp ../src/`
+- Create configuration file : `cp .env.example .env`
+- Update your `.env` file to set your own configuration
 
 ### Launch
 - Move to `bin` folder : `cd lp-sil-tcp-server-echo/bin/`
