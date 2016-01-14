@@ -85,8 +85,6 @@ public class Client implements Runnable {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		} finally {
-			tokens.release();
 		}
 	}
 

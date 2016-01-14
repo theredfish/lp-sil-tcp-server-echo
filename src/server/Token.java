@@ -17,6 +17,7 @@ public class Token {
     public synchronized void take() {
         while (isEmpty()) {
             try {
+                System.out.println("Thread is waitting : tokens empty.");
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -24,6 +25,7 @@ public class Token {
         }
 
         tokens--;
+        System.out.println("Token taken - Number =  " + tokens );
     }
 
     /**
@@ -32,6 +34,7 @@ public class Token {
      */
     public synchronized void release() {
         while (isFull()) {
+            System.out.println("Thread is waitting : tokens full.");
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -40,6 +43,8 @@ public class Token {
         }
 
         tokens++;
+        notifyAll();
+        System.out.println("Token released - Number =  " + tokens );
     }
 
     public boolean isFull() {
@@ -47,7 +52,7 @@ public class Token {
     }
 
     public boolean isEmpty() {
-        return tokens == 0;
+        return tokens <= 0;
     }
 
 }
