@@ -1,18 +1,16 @@
 package app;
 
-import server.ServerFactory;
-import server.HighLevelServer;
-import server.LowLevelServer;
+import server.factory.ServerFactory;
+import server.AbstractServer;
 
 public class Main {
 	public static void main(String[] args) {
 
-		ServerFactory serverFactory = new ServerFactory();
-		HighLevelServer s = serverFactory.getHighLevelServer();
+		AbstractServer server = ServerFactory.getServer();
 
-		s.setPoolSize(2);
-		s.setPort(9900);
-		s.setResponseDelay(2000);
-		s.launch();
+		server.setPoolSize(2);
+		server.setPort(9900);
+		server.setResponseDelay(2000);
+		server.launch();
 	}
 }

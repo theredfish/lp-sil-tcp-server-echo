@@ -6,14 +6,15 @@ import java.net.Socket;
 import client.Client;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 
 public class LowLevelServer extends AbstractServer {
 
     /**
      * Low level server constructor
      */
-    public LowLevelServer() {
-        super();
+    public LowLevelServer(Properties config) {
+		super(config);
     }
 
 	/**

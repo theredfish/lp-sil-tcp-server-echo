@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import client.Client;
+import java.util.Properties;
 
 public class HighLevelServer extends AbstractServer {
 
@@ -23,8 +24,8 @@ public class HighLevelServer extends AbstractServer {
 	 * We use newFixedThreadPool factory method. It's usefull to
 	 * avoid overhead by specifying pool size.
 	 */
-	public HighLevelServer() {
-		super();
+	public HighLevelServer(Properties config) {
+		super(config);
 		executorService = Executors.newFixedThreadPool(poolSize);
 	}
 
@@ -35,7 +36,7 @@ public class HighLevelServer extends AbstractServer {
 	public void launch() {
 		try {
 			socket = new ServerSocket(port);
-			System.out.println("TCP server is running on " + port + "...");
+			System.out.println("TCP high level server is running on " + port + "...");
 
 			while (true) {
 				Socket tcpClient = socket.accept();

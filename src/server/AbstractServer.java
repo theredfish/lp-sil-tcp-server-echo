@@ -25,10 +25,8 @@ public abstract class AbstractServer {
 	 * AbstractServer constructor.
 	 * Initialize the server (port, pool size and response delay).
 	 */
-	public AbstractServer() {
-		this.config = new Properties();
-
-		parseConfiguration();
+	public AbstractServer(Properties config) {
+		this.config = config;
 
 		this.cpuNumber = Integer.parseInt(config.getProperty("CPU_NUMBER"));
 		this.inactivityDelay = Integer.parseInt(config.getProperty("INACTIVITY_DELAY"));
@@ -37,8 +35,13 @@ public abstract class AbstractServer {
 		this.protocol = config.getProperty("PROTOCOL");
 		this.responseDelay = Integer.parseInt(config.getProperty("RESPONSE_DELAY"));
 
-		System.out.println(cpuNumber + " " + inactivityDelay + " " +
-		poolSize +  " " + port + " " + protocol + " " + responseDelay);
+		System.out.println("Configuration loaded... \n"
+			+ cpuNumber + " core \n"
+			+ "Max inactivity delay : "	+ inactivityDelay + "\n"
+			+ "Max threads : " + poolSize +  "\n"
+			+ "Port : " + port + "\n"
+			+ "Protocol : " + protocol + "\n"
+			+ "Max response delay : " + responseDelay);
 	}
 
 	/**
@@ -75,20 +78,6 @@ public abstract class AbstractServer {
 	 * Launch the server.
 	 */
 	public abstract void launch();
-
-	protected void parseConfiguration() {
-		try {
-			FileInputStream configFile = new FileInputStream("./../.env");
-			config.load(configFile);
-			configFile.close();
-		} catch (FileNotFoundException e) {
-			System.out.println("Configuration file '.env' not found "+e);
-			System.exit(-1);
-		} catch (IOException e) {
-			System.out.println("I/O error "+e);
-			System.exit(-1);
-		}
-	}
 
 	/**
 	 * Shut down the server in a proper way.
