@@ -26,7 +26,16 @@ public class HighLevelServer extends AbstractServer {
 	 */
 	public HighLevelServer(Properties config) {
 		super(config);
-		executorService = Executors.newFixedThreadPool(poolSize);
+				
+		//Si la poolSize est largement supérieur au nombre de coeur.
+		if(this.poolSize > 2*(this.cpuNumber)){
+			executorService = Executors.newFixedThreadPool(poolSize);
+			System.out.println("FixedPThreadPool choosen ...");
+		}else{
+			executorService = Executors.newCachedThreadPool();
+			System.out.println("CachedThreadPool choosen ...");
+		}
+		
 	}
 
 	/**
