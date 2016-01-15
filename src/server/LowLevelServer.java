@@ -16,7 +16,6 @@ public class LowLevelServer extends AbstractServer {
      * Low level server constructor
      *
      * Default strategy is "fixed".
-     * TODO use config to determine strategies.
      *
      * @param config allows to choose the strategy.
      */

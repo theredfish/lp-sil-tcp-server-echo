@@ -118,6 +118,9 @@ public class Client implements Runnable {
 	/**
      * Echo protocol implementation.
      * See RFC https://tools.ietf.org/html/rfc862
+     *
+     * @throws IOException input output exception
+     * @throws InterruptedException thread interrupted exception
 	 */
 	protected void echo() throws IOException, InterruptedException {
 		InputStream input = serverSocket.getInputStream();
