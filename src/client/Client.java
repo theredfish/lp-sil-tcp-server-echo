@@ -29,10 +29,11 @@ public class Client implements Runnable {
 	 * Initialize client with a server socket and default inactivity delay.
 	 *
 	 * @param serverSocket which represents the client serverSocket
+	 * @param inactivityDelay which represents the specified max inactivity delay
 	 */
-	public Client(Socket serverSocket) {
+	public Client(Socket serverSocket, int inactivityDelay) {
 		this.serverSocket = serverSocket;
-		this.inactivityDelay = 0;
+		this.inactivityDelay = inactivityDelay;
 	}
 
 	/**
@@ -44,8 +45,7 @@ public class Client implements Runnable {
 	 * @param server which represents the current server level instance
 	 */
 	public Client(Socket serverSocket, int inactivityDelay, AbstractServer server) {
-		this(serverSocket);
-		this.inactivityDelay = inactivityDelay;
+		this(serverSocket, inactivityDelay);
 		this.server = server;
 	}
 
@@ -59,8 +59,7 @@ public class Client implements Runnable {
 	 * @param tokens which represents the max number of executed thread
 	 */
 	public Client(Socket serverSocket, int inactivityDelay, AbstractServer server, Token tokens) {
-		this(serverSocket);
-		this.inactivityDelay = inactivityDelay;
+		this(serverSocket, inactivityDelay);
 		this.server = server;
 		this.tokens = tokens;
 	}

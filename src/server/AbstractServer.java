@@ -11,30 +11,29 @@ import java.util.Properties;
  * AbstractServer class
  */
 public abstract class AbstractServer {
-
+	protected int cpuNumber = 4;
+	protected int inactivityDelay = 2000;
+	protected int poolSize = 10;
+	protected int port = 9900;
+	protected String protocol = "TCP";
 	protected Properties config;
-	protected int cpuNumber;
-	protected int inactivityDelay;
-	protected int poolSize;
-	protected int port;
-	protected String protocol;
 	protected ServerSocket socket;
 
 
 	/**
 	 * AbstractServer constructor.
-	 * Initialize the server (port, pool size and response delay).
+	 * Initialize the server (port, pool size and inactivity delay).
 	 *
 	 * @param config which represent the specified configuration.
 	 */
 	public AbstractServer(Properties config) {
 		this.config = config;
 
-		this.cpuNumber = Integer.parseInt(config.getProperty("CPU_NUMBER"));
-		this.inactivityDelay = Integer.parseInt(config.getProperty("INACTIVITY_DELAY"));
-		this.poolSize = Integer.parseInt(config.getProperty("POOL_SIZE"));
-		this.port = Integer.parseInt(config.getProperty("PORT"));
-		this.protocol = config.getProperty("PROTOCOL");
+		this.cpuNumber = config.getProperty("CPU_NUMBER") != null? Integer.parseInt(config.getProperty("CPU_NUMBER")):this.cpuNumber;
+		this.inactivityDelay = config.getProperty("INACTIVITY_DELAY") != null?Integer.parseInt(config.getProperty("INACTIVITY_DELAY")):this.inactivityDelay;
+		this.poolSize = config.getProperty("POOL_SIZE") != null? Integer.parseInt(config.getProperty("POOL_SIZE")):this.poolSize;
+		this.port = config.getProperty("PORT") != null? Integer.parseInt(config.getProperty("PORT")):this.port;
+		this.protocol = config.getProperty("PROTOCOL") != null? config.getProperty("PROTOCOL"):this.protocol;
 
 		System.out.println("Configuration loaded... \n"
 			+ cpuNumber + " core \n"
