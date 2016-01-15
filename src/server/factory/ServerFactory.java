@@ -21,7 +21,7 @@ public class ServerFactory {
 
 	protected static void loadConfiguration() {
 		try {
-			FileInputStream configFile = new FileInputStream("./../.env");
+			FileInputStream configFile = new FileInputStream(".env");
 			config.load(configFile);
 			configFile.close();
 		} catch (FileNotFoundException e) {
