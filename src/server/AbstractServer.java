@@ -1,13 +1,14 @@
+/**
+ * @author Alexis Chappron - Julian Didier
+ */
+
 package server;
 
 import java.net.ServerSocket;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
+
 /**
  * AbstractServer class
- * See EchoProtocol RFC https://tools.ietf.org/html/rfc862
  */
 public abstract class AbstractServer {
 
@@ -17,13 +18,14 @@ public abstract class AbstractServer {
 	protected int poolSize;
 	protected int port;
 	protected String protocol;
-	protected int responseDelay;
 	protected ServerSocket socket;
 
 
 	/**
 	 * AbstractServer constructor.
 	 * Initialize the server (port, pool size and response delay).
+	 *
+	 * @param config which represent the specified configuration.
 	 */
 	public AbstractServer(Properties config) {
 		this.config = config;
@@ -33,15 +35,13 @@ public abstract class AbstractServer {
 		this.poolSize = Integer.parseInt(config.getProperty("POOL_SIZE"));
 		this.port = Integer.parseInt(config.getProperty("PORT"));
 		this.protocol = config.getProperty("PROTOCOL");
-		this.responseDelay = Integer.parseInt(config.getProperty("RESPONSE_DELAY"));
 
 		System.out.println("Configuration loaded... \n"
 			+ cpuNumber + " core \n"
 			+ "Max inactivity delay : "	+ inactivityDelay + "\n"
 			+ "Max threads : " + poolSize +  "\n"
 			+ "Port : " + port + "\n"
-			+ "Protocol : " + protocol + "\n"
-			+ "Max response delay : " + responseDelay);
+			+ "Protocol : " + protocol);
 	}
 
 	/**
@@ -66,32 +66,16 @@ public abstract class AbstractServer {
 	}
 
 	/**
-	 * Set response delay.
+	 * Set inactivity delay.
 	 *
-	 * @param delay which represents the server response delay
+	 * @param delay which represents the max inactivity delay (ms)
 	 */
-	public void setResponseDelay(int delay){
-		this.responseDelay = delay;
+	public void setInactivityDelay(int delay){
+		this.inactivityDelay = delay;
 	}
 
 	/**
 	 * Launch the server.
 	 */
 	public abstract void launch();
-
-	/**
-	 * Shut down the server in a proper way.
-	 */
-	public void shutdown() {
-		Runtime.getRuntime().addShutdownHook(new Thread(){
-			public void run(){
-				try {
-					socket.close();
-					System.out.println("The server is shut down!");
-				} catch (IOException e) {
-					System.out.println("Error - Cannot close socket" + e);
-				}
-			}
-		});
-	}
 }

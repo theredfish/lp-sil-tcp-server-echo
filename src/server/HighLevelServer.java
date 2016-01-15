@@ -1,3 +1,7 @@
+/**
+ * @author Alexis Chappron - Julian Didier
+ */
+
 package server;
 
 import java.io.IOException;
@@ -20,18 +24,27 @@ public class HighLevelServer extends AbstractServer {
 	/**
 	 * High level server constructor which initializes the executor service.
 	 *
-	 * Executor service is initialized with fixed thread pool.
-	 * We use newFixedThreadPool factory method. It's usefull to
-	 * avoid overhead by specifying pool size.
+	 * FixedThreadPool is usefull to avoid overhead by specifying pool size.
+	 * CachedThreadPool is usefull to focus reuse.
+	 *
+	 * @param config allows to choose the strategy.
 	 */
 	public HighLevelServer(Properties config) {
 		super(config);
-		executorService = Executors.newFixedThreadPool(poolSize);
+
+		// If the poolsize is much higher than the number of core.
+		if(this.poolSize > 2*(this.cpuNumber)){
+			executorService = Executors.newFixedThreadPool(poolSize);
+			System.out.println("FixedPThreadPool choosen ...");
+		}else{
+			executorService = Executors.newCachedThreadPool();
+			System.out.println("CachedThreadPool choosen ...");
+		}
+
 	}
 
 	/**
 	 * Launch high level server as a (echo) service
-	 * TODO : improve this part by adding explicit echo service.
 	 */
 	public void launch() {
 		try {
@@ -40,7 +53,7 @@ public class HighLevelServer extends AbstractServer {
 
 			while (true) {
 				Socket tcpClient = socket.accept();
-				Client client = new Client(tcpClient, responseDelay);
+				Client client = new Client(tcpClient, inactivityDelay, this);
 
 				// Here we run the client
 				executorService.submit(client);

@@ -1,17 +1,24 @@
+/**
+ * @author Alexis Chappron - Julian Didier
+ */
+
 package server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import client.Client;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
 
 public class LowLevelServer extends AbstractServer {
 
     /**
      * Low level server constructor
+     *
+     * Default strategy is "fixed".
+     * TODO use config to determine strategies.
+     *
+     * @param config allows to choose the strategy.
      */
     public LowLevelServer(Properties config) {
 		super(config);
@@ -21,6 +28,8 @@ public class LowLevelServer extends AbstractServer {
 	 * Launch low level server as a (echo) service
 	 */
     public void launch() {
+		Token tokens = new Token(poolSize);
+
 		try {
 			socket = new ServerSocket(port);
 
@@ -30,10 +39,11 @@ public class LowLevelServer extends AbstractServer {
 			// Server in listen mode
 			while (true) {
 				Socket tcpClient = socket.accept();
-				Client client = new Client(tcpClient, responseDelay);
+				Client client = new Client(tcpClient, inactivityDelay, this, tokens);
 
 				// Here we run new "client" thread
-				new Thread(client).start();
+				Thread t = new Thread(client);
+				t.start();
 			}
 		} catch (IOException e) {
 			System.out.println("I/O Error" + e);

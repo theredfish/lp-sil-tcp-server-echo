@@ -1,3 +1,7 @@
+/**
+ * @author Alexis Chappron - Julian Didier
+ */
+
 package client;
 
 import java.io.IOException;
@@ -5,67 +9,129 @@ import java.net.Socket;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.io.OutputStream;
+import server.AbstractServer;
+import server.LowLevelServer;
+import server.HighLevelServer;
+import server.Token;
 
 /**
  * Client class
  */
 public class Client implements Runnable {
 
-	private int delay;
-	Socket serverSocket;
+	private int inactivityDelay;
+	private Socket serverSocket;
+	private AbstractServer server;
+	private Token tokens;
 
 	/**
 	 * Client constructor.
-	 * Initialize client with a serverSocket and default delay.
+	 * Initialize client with a server socket and default inactivity delay.
 	 *
 	 * @param serverSocket which represents the client serverSocket
 	 */
 	public Client(Socket serverSocket) {
 		this.serverSocket = serverSocket;
-		this.delay = 0;
+		this.inactivityDelay = 0;
 	}
 
 	/**
 	 * Client constructor.
-	 * Initialize client with a serverSocket and a specified sleep time.
+	 * Initialize client with a server socket and default inactivity delay.
 	 *
-	 * @param serverSocket which represents the open tcp connection with a client.
-	 * @param delay which represents client's sleep time.
-	 **/
-	public Client(Socket serverSocket, int delay) {
+	 * @param serverSocket which represents the client serverSocket
+	 * @param inactivityDelay which represents the specified max inactivity delay
+	 * @param server which represents the current server level instance
+	 */
+	public Client(Socket serverSocket, int inactivityDelay, AbstractServer server) {
 		this(serverSocket);
-		this.delay = delay;
-	}
-
-	public boolean quit(String str) {
-		return str.equalsIgnoreCase("quit");
+		this.inactivityDelay = inactivityDelay;
+		this.server = server;
 	}
 
 	/**
-	 * Client thread.
-	 * When client is running we process to Read/Write (input/output standard).
+	 * Client constructor.
+	 * Initialize client with a server socket and default inactivity delay.
+	 *
+	 * @param serverSocket which represents the client serverSocket
+	 * @param inactivityDelay which represents the specified max inactivity delay
+	 * @param server which represents the current server level instance
+	 * @param tokens which represents the max number of executed thread
+	 */
+	public Client(Socket serverSocket, int inactivityDelay, AbstractServer server, Token tokens) {
+		this(serverSocket);
+		this.inactivityDelay = inactivityDelay;
+		this.server = server;
+		this.tokens = tokens;
+	}
+
+	/**
+	 * Run the thread
+	 * Low level or high level. Depends of current server.
 	 */
 	public void run() {
+		if (server instanceof LowLevelServer) {
+			runLowLevel();
+		} else {
+			runHighLevel();
+		}
+	}
+
+	/**
+	 * Run low level server.
+	 */
+	protected void runLowLevel() {
+		tokens.take();
+
 		try {
-			InputStream input = serverSocket.getInputStream();
-			OutputStream output = serverSocket.getOutputStream();
-			Scanner scanner = new Scanner(input);
-			byte[] line = scanner.nextLine().getBytes();
+			echo();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			tokens.release();
+		}
+	}
 
-			while(!quit(new String(line))) {
-				output.write(line);
-				line = scanner.nextLine().getBytes();
-			}
-
-			Thread.sleep(2);
-
-			output.write(line);
-			serverSocket.close();
-
+	/**
+	 * Run high level server
+	 */
+	protected void runHighLevel() {
+		try {
+			echo();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 *
+	 * @param str string that represents what the user has entered.
+	 * @return true or false
+	 */
+	protected boolean quit(String str) {
+		return str.equalsIgnoreCase("quit");
+	}
+
+	/**
+     * Echo protocol implementation.
+     * See RFC https://tools.ietf.org/html/rfc862
+	 */
+	protected void echo() throws IOException, InterruptedException {
+		InputStream input = serverSocket.getInputStream();
+		OutputStream output = serverSocket.getOutputStream();
+		Scanner scanner = new Scanner(input);
+		byte[] line = scanner.nextLine().getBytes();
+
+		while(!quit(new String(line))) {
+			output.write(line);
+			line = scanner.nextLine().getBytes();
+		}
+
+		output.write(line);
+		serverSocket.close();
 	}
 }
