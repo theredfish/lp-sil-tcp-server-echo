@@ -1,3 +1,7 @@
+/**
+ * @author Alexis Chappron - Julian Didier
+ */
+
 package client;
 
 import java.io.IOException;
@@ -15,46 +19,55 @@ import server.Token;
  */
 public class Client implements Runnable {
 
-	private int delay;
+	private int inactivityDelay;
 	private Socket serverSocket;
 	private AbstractServer server;
 	private Token tokens;
 
-
 	/**
 	 * Client constructor.
-	 * Initialize client with a serverSocket and default delay.
+	 * Initialize client with a server socket and default inactivity delay.
 	 *
 	 * @param serverSocket which represents the client serverSocket
 	 */
 	public Client(Socket serverSocket) {
 		this.serverSocket = serverSocket;
-		this.delay = 0;
+		this.inactivityDelay = 0;
 	}
 
-	public Client(Socket serverSocket, int delay, AbstractServer server) {
+	/**
+	 * Client constructor.
+	 * Initialize client with a server socket and default inactivity delay.
+	 *
+	 * @param serverSocket which represents the client serverSocket
+	 * @param inactivityDelay which represents the specified max inactivity delay
+	 * @param server which represents the current server level instance
+	 */
+	public Client(Socket serverSocket, int inactivityDelay, AbstractServer server) {
 		this(serverSocket);
-		this.delay = delay;
+		this.inactivityDelay = inactivityDelay;
 		this.server = server;
 	}
 
 	/**
 	 * Client constructor.
-	 * Initialize client with a serverSocket and a specified sleep time.
+	 * Initialize client with a server socket and default inactivity delay.
 	 *
-	 * @param serverSocket which represents the open tcp connection with a client.
-	 * @param delay which represents client's sleep time.
-	 **/
-	public Client(Socket serverSocket, int delay, AbstractServer server, Token tokens) {
+	 * @param serverSocket which represents the client serverSocket
+	 * @param inactivityDelay which represents the specified max inactivity delay
+	 * @param server which represents the current server level instance
+	 * @param tokens which represents the max number of executed thread
+	 */
+	public Client(Socket serverSocket, int inactivityDelay, AbstractServer server, Token tokens) {
 		this(serverSocket);
-		this.delay = delay;
+		this.inactivityDelay = inactivityDelay;
 		this.server = server;
 		this.tokens = tokens;
 	}
 
 	/**
-	 * Client thread.
-	 * When client is running we process to Read/Write (input/output standard).
+	 * Run the thread
+	 * Low level or high level. Depends of current server.
 	 */
 	public void run() {
 		if (server instanceof LowLevelServer) {
@@ -64,6 +77,9 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Run low level server.
+	 */
 	protected void runLowLevel() {
 		tokens.take();
 
@@ -78,6 +94,9 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Run high level server
+	 */
 	protected void runHighLevel() {
 		try {
 			echo();
@@ -88,10 +107,19 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 *
+	 * @param str string that represents what the user has entered.
+	 * @return true or false
+	 */
 	protected boolean quit(String str) {
 		return str.equalsIgnoreCase("quit");
 	}
 
+	/**
+     * Echo protocol implementation.
+     * See RFC https://tools.ietf.org/html/rfc862
+	 */
 	protected void echo() throws IOException, InterruptedException {
 		InputStream input = serverSocket.getInputStream();
 		OutputStream output = serverSocket.getOutputStream();
@@ -106,6 +134,4 @@ public class Client implements Runnable {
 		output.write(line);
 		serverSocket.close();
 	}
-
-
 }

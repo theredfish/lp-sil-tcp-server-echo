@@ -29,3 +29,7 @@ In addition you can use these commands :
 - Establish a connection to the server : `telnet localhost 9900`
 - Write something, then push `enter`
 - If you are bored to play you can write `quit`
+
+## TODO
+- Socket inactivity delay with setSoTimeout : currently exception occurs with Scanner (write).
+- Different strategies with the low level server implementation.
